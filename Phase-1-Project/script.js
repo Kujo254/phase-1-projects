@@ -5,18 +5,18 @@ const resultsSection = document.getElementById('gift-results');
 const savedSection = document.getElementById('saved-section');
 const savedList = document.getElementById('saved-gifts');
 const clearBtn = document.getElementById('clear-saved');
+const toggleBtn = document.getElementById('toggle-theme');
 
 let allGiftIdeas = [];
 let savedGifts = [];
 
-// Fetch data and build unique dropdown options
+// Fetch gift ideas from json-server
 fetch("http://localhost:3000/gifts")
   .then(res => res.json())
   .then(data => {
     allGiftIdeas = data;
-    console.log("Gift ideas loaded:", allGiftIdeas);
 
-    // Populate occasions
+    // Populate occasion dropdown
     const uniqueOccasions = [...new Set(allGiftIdeas.map(item => item.occasion))];
     uniqueOccasions.forEach(occasion => {
       const option = document.createElement('option');
@@ -25,11 +25,13 @@ fetch("http://localhost:3000/gifts")
       occasionSelect.appendChild(option);
     });
 
-    // On occasion change, populate age groups
+    // When occasion changes, update age group dropdown
     occasionSelect.addEventListener('change', () => {
       const selectedOccasion = occasionSelect.value;
-      const filtered = allGiftIdeas.filter(item => item.occasion === selectedOccasion);
-      const uniqueAges = [...new Set(filtered.map(item => item.age))];
+      const ageOptions = allGiftIdeas
+        .filter(item => item.occasion === selectedOccasion)
+        .map(item => item.age);
+      const uniqueAges = [...new Set(ageOptions)];
 
       ageSelect.innerHTML = '<option value="">-- Select Age Group --</option>';
       uniqueAges.forEach(age => {
@@ -45,6 +47,7 @@ fetch("http://localhost:3000/gifts")
     resultsSection.innerHTML = `<p>Failed to load gift ideas. Please check your server.</p>`;
   });
 
+// Handle form submission
 form.addEventListener('submit', e => {
   e.preventDefault();
   const occasion = occasionSelect.value;
@@ -72,16 +75,21 @@ form.addEventListener('submit', e => {
       <h3>${giftItem.idea}</h3>
       <button class="save-btn">❤️ Save</button>
     `;
+
     card.querySelector('.save-btn').addEventListener('click', () => {
       if (!savedGifts.includes(giftItem.idea)) {
         savedGifts.push(giftItem.idea);
         renderSavedGifts();
       }
     });
+
     resultsSection.appendChild(card);
   });
+
+  form.reset();
 });
 
+// Render saved gifts
 function renderSavedGifts() {
   savedList.innerHTML = '';
   if (savedGifts.length === 0) {
@@ -98,17 +106,18 @@ function renderSavedGifts() {
   savedSection.style.display = 'block';
 }
 
+// Clear saved gifts
 clearBtn.addEventListener('click', () => {
   savedGifts = [];
   renderSavedGifts();
 });
 
+// Capitalize helper
 function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-// Optional: Dark mode toggle
-const toggleBtn = document.getElementById('toggle-theme');
-toggleBtn?.addEventListener('click', () => {
+// Toggle dark mode
+toggleBtn.addEventListener('click', () => {
   document.body.classList.toggle('dark-mode');
 });
