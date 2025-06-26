@@ -101,3 +101,7 @@ clearBtn.addEventListener('click', () => {
 function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
+const toggleBtn = document.getElementById('toggle-theme');
+toggleBtn.addEventListener('click', () => {
+  document.body.classList.toggle('dark-mode');
+});
