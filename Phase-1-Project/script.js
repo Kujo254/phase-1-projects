@@ -73,7 +73,7 @@ form.addEventListener('submit', e => {
     card.className = 'gift-card';
     card.innerHTML = `
       <h3>${giftItem.idea}</h3>
-      <button class="save-btn">❤️ Save</button>
+      <button class="save-btn"> Save</button>
     `;
 
     card.querySelector('.save-btn').addEventListener('click', () => {
@@ -99,7 +99,7 @@ function renderSavedGifts() {
 
   savedGifts.forEach(gift => {
     const li = document.createElement('li');
-    li.textContent = `❤️ ${gift}`;
+    li.textContent = ` ${gift}`;
     savedList.appendChild(li);
   });
 
