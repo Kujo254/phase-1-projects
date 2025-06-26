@@ -10,7 +10,7 @@ let allGiftIdeas = [];
 let savedGifts = [];
 
 // Fetch gift data on page load
-fetch("http://localhost:3000/giftIdeas")
+fetch("http://localhost:3000/gifts")
   .then(res => res.json())
   .then(data => {
     allGiftIdeas = data;
