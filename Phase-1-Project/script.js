@@ -88,6 +88,10 @@ function renderSavedGifts() {
 
   savedSection.style.display = 'block';
 }
+if (savedGifts.length === 0) {
+  savedList.innerHTML = "<li>No saved gifts yet ❤️</li>";
+}
+
 
 clearBtn.addEventListener('click', () => {
   savedGifts = [];
