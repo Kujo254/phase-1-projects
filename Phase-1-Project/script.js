@@ -9,20 +9,30 @@ const clearBtn = document.getElementById('clear-saved');
 let allGiftIdeas = [];
 let savedGifts = [];
 
-// Fetch gift data on page load
+// Fetch data and build unique dropdown options
 fetch("http://localhost:3000/gifts")
   .then(res => res.json())
   .then(data => {
     allGiftIdeas = data;
     console.log("Gift ideas loaded:", allGiftIdeas);
 
+    // Populate occasions
+    const uniqueOccasions = [...new Set(allGiftIdeas.map(item => item.occasion))];
+    uniqueOccasions.forEach(occasion => {
+      const option = document.createElement('option');
+      option.value = occasion;
+      option.textContent = capitalize(occasion);
+      occasionSelect.appendChild(option);
+    });
+
+    // On occasion change, populate age groups
     occasionSelect.addEventListener('change', () => {
       const selectedOccasion = occasionSelect.value;
-      const options = allGiftIdeas.filter(item => item.occasion === selectedOccasion);
-      const uniqueAgeGroups = [...new Set(options.map(item => item.ageGroup))];
+      const filtered = allGiftIdeas.filter(item => item.occasion === selectedOccasion);
+      const uniqueAges = [...new Set(filtered.map(item => item.age))];
 
       ageSelect.innerHTML = '<option value="">-- Select Age Group --</option>';
-      uniqueAgeGroups.forEach(age => {
+      uniqueAges.forEach(age => {
         const option = document.createElement('option');
         option.value = age;
         option.textContent = capitalize(age);
@@ -38,34 +48,33 @@ fetch("http://localhost:3000/gifts")
 form.addEventListener('submit', e => {
   e.preventDefault();
   const occasion = occasionSelect.value;
-  const ageGroup = ageSelect.value;
-
+  const age = ageSelect.value;
   resultsSection.innerHTML = '';
 
-  if (!occasion || !ageGroup) {
+  if (!occasion || !age) {
     resultsSection.innerHTML = '<p>Please select both occasion and age group.</p>';
     return;
   }
 
-  const match = allGiftIdeas.find(
-    item => item.occasion === occasion && item.ageGroup === ageGroup
+  const matches = allGiftIdeas.filter(
+    item => item.occasion === occasion && item.age === age
   );
 
-  if (!match) {
+  if (matches.length === 0) {
     resultsSection.innerHTML = '<p>No gift ideas found.</p>';
     return;
   }
 
-  match.gifts.forEach(gift => {
+  matches.forEach(giftItem => {
     const card = document.createElement('div');
     card.className = 'gift-card';
     card.innerHTML = `
-      <h3>${gift}</h3>
+      <h3>${giftItem.idea}</h3>
       <button class="save-btn">❤️ Save</button>
     `;
     card.querySelector('.save-btn').addEventListener('click', () => {
-      if (!savedGifts.includes(gift)) {
-        savedGifts.push(gift);
+      if (!savedGifts.includes(giftItem.idea)) {
+        savedGifts.push(giftItem.idea);
         renderSavedGifts();
       }
     });
@@ -88,10 +97,6 @@ function renderSavedGifts() {
 
   savedSection.style.display = 'block';
 }
-if (savedGifts.length === 0) {
-  savedList.innerHTML = "<li>No saved gifts yet ❤️</li>";
-}
-
 
 clearBtn.addEventListener('click', () => {
   savedGifts = [];
@@ -101,7 +106,9 @@ clearBtn.addEventListener('click', () => {
 function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
+
+// Optional: Dark mode toggle
 const toggleBtn = document.getElementById('toggle-theme');
-toggleBtn.addEventListener('click', () => {
+toggleBtn?.addEventListener('click', () => {
   document.body.classList.toggle('dark-mode');
 });
