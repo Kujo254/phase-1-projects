@@ -11,8 +11,8 @@ const toggleBtn = document.getElementById('toggle-theme');
 let allGiftIdeas = []; // Holds all gifts fetched from the server
 let savedGifts = [];   // Stores user-saved gift ideas
 
-// Fetch gift ideas from the local JSON server
-fetch("http://localhost:3000/gifts")
+// Fetch gift ideas from the live Render server
+fetch("https://gift-api.onrender.com/gifts")
   .then(res => res.json())
   .then(data => {
     allGiftIdeas = data;
