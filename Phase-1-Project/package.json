@@ -1,0 +1,15 @@
+{
+  "name": "Gift-Idea-Generator",
+  "version": "1.0.0",
+  "description": "A simple Gift idea generator web app",
+  "main": "script.js",
+  "scripts": {
+    "start": "json-server --watch db.json --port $PORT --host 0.0.0.0"
+
+  },
+  "dependencies": {
+    "json-server": "^0.17.3"
+  },
+  "author": "Kurui",
+  "license": "MIT"
+}
