@@ -37,7 +37,7 @@ This app fetches data from a local `json-server`, using asynchronous `fetch()` c
 4. Open `index.html` in your browser to use the app.
 
 ## Live Demo
-https://gift-idea-generator1.netlify.app/
+https://gift-idea-genera.netlify.app/
 ## License
 This project is licensed under the MIT License.
 
